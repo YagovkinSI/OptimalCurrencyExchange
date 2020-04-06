@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OptimalCurrencyExchange.Web.Models;
+using OptimalCurrencyExchange.Web.Models.ModelsDB;
 
 namespace OptimalCurrencyExchange.Web.Controllers
 {
@@ -32,6 +33,11 @@ namespace OptimalCurrencyExchange.Web.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult FindOptimalExchange()
+        {
+            return View(new Exchange());
         }
     }
 }

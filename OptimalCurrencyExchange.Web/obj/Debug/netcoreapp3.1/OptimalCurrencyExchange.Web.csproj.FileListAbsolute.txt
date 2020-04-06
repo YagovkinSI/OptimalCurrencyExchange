@@ -162,3 +162,4 @@ D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Details.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Edit.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Index.cshtml.g.cs
+D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\FindOptimalExchange.cshtml.g.cs

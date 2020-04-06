@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\YSIApps\\OptimalCurrencyExchange\\OptimalCurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj": {}
+    "D:\\YSIApps\\CurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj": {}
   },
   "projects": {
-    "D:\\YSIApps\\OptimalCurrencyExchange\\OptimalCurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj": {
+    "D:\\YSIApps\\CurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\YSIApps\\OptimalCurrencyExchange\\OptimalCurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj",
+        "projectUniqueName": "D:\\YSIApps\\CurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj",
         "projectName": "OptimalCurrencyExchange.Web",
-        "projectPath": "D:\\YSIApps\\OptimalCurrencyExchange\\OptimalCurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj",
+        "projectPath": "D:\\YSIApps\\CurrencyExchange\\OptimalCurrencyExchange.Web\\OptimalCurrencyExchange.Web.csproj",
         "packagesPath": "C:\\Users\\Upgrade2111\\.nuget\\packages\\",
-        "outputPath": "D:\\YSIApps\\OptimalCurrencyExchange\\OptimalCurrencyExchange\\OptimalCurrencyExchange.Web\\obj\\",
+        "outputPath": "D:\\YSIApps\\CurrencyExchange\\OptimalCurrencyExchange.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\",
@@ -42,6 +42,30 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[3.1.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.1.1, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

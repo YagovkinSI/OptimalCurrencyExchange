@@ -1,0 +1,53 @@
+﻿@model OptimalCurrencyExchange.Web.Models.ModelsDB.Exchange
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Exchange</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DateTime" class="control-label"></label>
+                <input asp-for="DateTime" class="form-control" />
+                <span asp-validation-for="DateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CurrencyFrom" class="control-label"></label>
+                <select asp-for="CurrencyFrom" class="form-control"></select>
+                <span asp-validation-for="CurrencyFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CountFrom" class="control-label"></label>
+                <input asp-for="CountFrom" class="form-control" />
+                <span asp-validation-for="CountFrom" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CurrencyTo" class="control-label"></label>
+                <select asp-for="CurrencyTo" class="form-control"></select>
+                <span asp-validation-for="CurrencyTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CountTo" class="control-label"></label>
+                <input asp-for="CountTo" class="form-control" />
+                <span asp-validation-for="CountTo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

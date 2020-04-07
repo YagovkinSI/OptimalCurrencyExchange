@@ -5,12 +5,14 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.Models.Enums
 {
-    public enum Currency
+    public enum enCurrency
     {
-        Ruble = 0,
-        USD = 1,
-        Euro = 2,
-        Yen = 3
+        Unknow = 0,
+        RUR = 1,
+        USD = 2,
+        EUR = 3,
+        UAH = 11,
+        BYN = 12
     }
 
 }

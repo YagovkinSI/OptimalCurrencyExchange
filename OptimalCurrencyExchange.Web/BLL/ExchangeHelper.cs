@@ -1,7 +1,10 @@
-﻿using OptimalCurrencyExchange.Web.BLL.BankConverters;
+﻿using Microsoft.EntityFrameworkCore;
+using OptimalCurrencyExchange.BLL;
+using OptimalCurrencyExchange.Web.BLL.BankConverters;
 using OptimalCurrencyExchange.Web.Models;
 using OptimalCurrencyExchange.Web.Models.Enums;
 using OptimalCurrencyExchange.Web.Models.ModelsDB;
+using OptimalCurrencyExchange.Web.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +46,15 @@ namespace OptimalCurrencyExchange.Web.BLL
                     await UpdateDataAsync(context, bankFromDB, bankConverter);
                 }                
             }
+        }
+
+        internal static List<Exchange> FindBestExchanges(ExchangeDbContext context, ExchangeRequest exchangeRequest)
+        {
+            var exchangeDbContext = context.ExchangeRates.ToList();
+            var task = new FindAllExchangesTask(exchangeRequest, exchangeDbContext);
+            task.Exucute();
+            var allExchange = task.Result;
+            return allExchange;
         }
 
         private static async Task UpdateDataAsync(ExchangeDbContext context, Bank bankFromDB, IBankConverter bankConverter)

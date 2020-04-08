@@ -46,6 +46,9 @@ namespace OptimalCurrencyExchange.Web.Models
             model.HasOne(e => e.Exchange)
                 .WithMany(e => e.ExchangeSteps)
                 .HasForeignKey(e => e.ExchangeId);
+            model.HasOne(e => e.Bank)
+                .WithMany(e => e.ExchangeSteps)
+                .HasForeignKey(e => e.BankId);
         }
 
         private void CreateBanks(ModelBuilder modelBuilder)
@@ -56,6 +59,10 @@ namespace OptimalCurrencyExchange.Web.Models
                 .WithOne(e => e.Bank)
                 .HasForeignKey(e => e.BankId)
                 .OnDelete(DeleteBehavior.Cascade);
+            model.HasMany(e => e.ExchangeSteps)
+                .WithOne(e => e.Bank)
+                .HasForeignKey(e => e.BankId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         private void CreateExchangeRates(ModelBuilder modelBuilder)

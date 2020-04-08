@@ -4,10 +4,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OptimalCurrencyExchange.Web.BLL;
 using OptimalCurrencyExchange.Web.Models;
 using OptimalCurrencyExchange.Web.Models.ModelsDB;
+using OptimalCurrencyExchange.Web.Models.ViewModels;
 
 namespace OptimalCurrencyExchange.Web.Controllers
 {
@@ -38,8 +40,12 @@ namespace OptimalCurrencyExchange.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public IActionResult FindOptimalExchangeAsync()
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> FindOptimalExchangeAsync([Bind("CurrencyFrom,CountFrom,CurrencyTo")] ExchangeRequest exchangeRequest)
         {
+            await ExchangeHelper.CheckDataRelevanceAsync(_context);
+            var bestExchanges = ExchangeHelper.FindBestExchanges(_context, exchangeRequest);
             return View(new Exchange());
         }
     }

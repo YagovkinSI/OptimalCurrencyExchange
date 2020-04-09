@@ -75,14 +75,15 @@ namespace OptimalCurrencyExchange.BLL
             foreach (var rate in rates)
             {
                 var countFrom = steps.LastOrDefault()?.CountTo ?? exchangeRequest.CountFrom;
-                var countTo = countFrom / rate.Rate;
+                var countTo = Math.Round(countFrom / rate.Rate, 2, MidpointRounding.ToNegativeInfinity);
                 var step = new ExchangeStep
                 {
                     CurrencyFrom = chain[stepNumber - 1],
                     CurrencyTo = chain[stepNumber],
                     CountFrom = countFrom,
                     CountTo = countTo,
-                    BankId = rate.BankId
+                    BankId = rate.BankId,
+                    Bank = rate.Bank
                 };
                 var newSteps = new List<ExchangeStep>(steps.Count + 1);
                 newSteps.AddRange(steps);

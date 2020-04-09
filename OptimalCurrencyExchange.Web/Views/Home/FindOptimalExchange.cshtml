@@ -1,59 +1,33 @@
-﻿@model IEnumerable<OptimalCurrencyExchange.Web.Models.ModelsBL.Exchange>
+﻿@model List<OptimalCurrencyExchange.Web.Models.ModelsBL.Exchange>
 
 @{
     ViewData["Title"] = "FindOptimalExchange";
 }
 
-<h1>FindOptimalExchange</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.DateTime)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrencyFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CountFrom)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CurrencyTo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CountTo)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrencyFrom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CountFrom)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrencyTo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CountTo)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+@{
+    var firstExchange = Model.First();
+    var count = Math.Min(Model.Count, 10);
 }
-    </tbody>
-</table>
+
+<h1>Оптимальные варианты обмена @firstExchange.CountFrom @firstExchange.CurrencyFrom в @firstExchange.CurrencyTo</h1>
+<div>
+    @for (var i = 0; i < count; i++)
+    {
+        var item = Model[i];
+        <div>
+            <p>
+                Можно получить <strong>@item.CountTo @item.CurrencyTo</strong> сделав следующие шаги:
+            </p>
+            <ol>
+                @for (var j = 0; j < item.ExchangeSteps.Count; j++)
+                {
+                    var step = item.ExchangeSteps[j];
+                    <li>Обменять в банке @step.Bank.Name @step.CountFrom @step.CurrencyFrom на @step.CountTo @step.CurrencyTo</li>
+
+                }
+            </ol>
+        </div>        
+    }
+</div>
+
+

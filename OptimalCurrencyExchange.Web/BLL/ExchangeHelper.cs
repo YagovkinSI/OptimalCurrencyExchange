@@ -51,7 +51,9 @@ namespace OptimalCurrencyExchange.Web.BLL
 
         internal static List<Exchange> FindBestExchanges(ExchangeDbContext context, ExchangeRequest exchangeRequest)
         {
-            var exchangeDbContext = context.ExchangeRates.ToList();
+            var exchangeDbContext = context.ExchangeRates
+                .Include(e => e.Bank)
+                .ToList();
             var task = new FindAllExchangesTask(exchangeRequest, exchangeDbContext);
             task.Exucute();
             var allExchange = task.Result;

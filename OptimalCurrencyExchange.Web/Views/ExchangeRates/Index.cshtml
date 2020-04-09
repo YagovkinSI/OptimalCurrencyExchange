@@ -4,16 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Курсы обмена валют</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Bank)
+                @Html.DisplayNameFor(model => model.Bank.Name)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CurrencySale)
@@ -31,7 +28,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Bank.Id)
+                @Html.DisplayFor(modelItem => item.Bank.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.CurrencySale)
@@ -41,11 +38,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Rate)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -9,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using OptimalCurrencyExchange.Web.BLL;
+using OptimalCurrencyExchange.Web.DAL;
 using OptimalCurrencyExchange.Web.Models;
 
 namespace OptimalCurrencyExchange.Web
@@ -28,6 +31,9 @@ namespace OptimalCurrencyExchange.Web
             string connection = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<ExchangeDbContext>(options =>
                 options.UseSqlServer(connection));
+            services.AddSingleton<HttpClient>();
+            services.AddScoped<DataBaseService>();
+            services.AddScoped<ExchangeService>();
             services.AddControllersWithViews();
         }
 

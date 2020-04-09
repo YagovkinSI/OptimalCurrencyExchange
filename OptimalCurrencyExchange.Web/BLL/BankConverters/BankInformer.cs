@@ -58,8 +58,12 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
 
         protected void AddToList(ref List<ExchangeRate> list, enCurrency sale, enCurrency buy, decimal rate)
         {
-            var obj = new ExchangeRate();
-            obj.Fill(sale, buy, rate);
+            var obj = new ExchangeRate
+            {
+                CurrencySale = sale,
+                CurrencyBuy = buy,
+                Rate = (double)rate
+            };
             list.Add(obj);
         }
     }

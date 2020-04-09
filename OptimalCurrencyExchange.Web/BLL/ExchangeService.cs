@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OptimalCurrencyExchange.BLL;
 using OptimalCurrencyExchange.Web.BLL.BankConverters;
-using OptimalCurrencyExchange.Web.Models;
+using OptimalCurrencyExchange.Web.DAL;
 using OptimalCurrencyExchange.Web.Models.Enums;
 using OptimalCurrencyExchange.Web.Models.ModelsBL;
 using OptimalCurrencyExchange.Web.Models.ModelsDB;
@@ -14,20 +14,28 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL
 {
-    public static class ExchangeHelper
+    public class ExchangeService
     {
-        private static HttpClient client = new HttpClient();
+        private readonly DataBaseService dataBaseService;
 
-        private static IBankInformer[] bankConverters = new IBankInformer[] {
+        private readonly HttpClient client ;
+
+        private IBankInformer[] bankConverters = new IBankInformer[] {
             new AlfaBankInformer(),
             new PrivatBankInformer(), 
             new BelarusBankInformer() };
 
         const double DataRelevanceDeltaHours = 1.0;
 
-        public static async Task CheckDataRelevanceAsync(ExchangeDbContext context)
+        public ExchangeService(DataBaseService dataBaseService, HttpClient httpClient)
         {
-            var banksFromDB = context.Banks.ToList();
+            this.dataBaseService = dataBaseService;
+            client = httpClient;
+        }
+
+        public async Task CheckDataRelevanceAsync()
+        {
+            var banksFromDB = dataBaseService.GetBanks();
             foreach (var bankConverter in bankConverters)
             {
                 var bankFromDB = banksFromDB.SingleOrDefault(b => b.Name == bankConverter.Name);
@@ -38,47 +46,33 @@ namespace OptimalCurrencyExchange.Web.BLL
                         Name = bankConverter.Name,
                         Url = bankConverter.Url,
                         LastUpdate = DateTime.MinValue
-                    };
-                    context.Banks.Add(bankFromDB);
-                    await context.SaveChangesAsync();
+                    }; 
+                    await dataBaseService.AddBankAsync(bankFromDB);
                 }
                 if (bankFromDB.LastUpdate < DateTime.Now - TimeSpan.FromHours(DataRelevanceDeltaHours))
                 {
-                    await UpdateDataAsync(context, bankFromDB, bankConverter);
+                    await UpdateDataAsync(bankFromDB, bankConverter);
                 }                
             }
         }
 
-        internal static List<Exchange> FindBestExchanges(ExchangeDbContext context, ExchangeRequest exchangeRequest)
+        internal List<Exchange> FindBestExchanges(ExchangeRequest exchangeRequest)
         {
-            var exchangeDbContext = context.ExchangeRates
-                .Include(e => e.Bank)
-                .ToList();
+            var exchangeDbContext = dataBaseService.GetExchangeRates();
             var task = new FindAllExchangesTask(exchangeRequest, exchangeDbContext);
             task.Exucute();
             var allExchange = task.Result;
             return allExchange;
         }
 
-        private static async Task UpdateDataAsync(ExchangeDbContext context, Bank bankFromDB, IBankInformer bankConverter)
+        private async Task UpdateDataAsync(Bank bankFromDB, IBankInformer bankConverter)
         {
             var updateDate = DateTime.Now;
             var newExchangeRateList = await bankConverter.GetNewExchangeRateListAsync(client);
             if (newExchangeRateList.Count > 0)
             {
-                var ratesFromDB = context.ExchangeRates.Where(r => r.BankId == bankFromDB.Id);
-                context.ExchangeRates.RemoveRange(ratesFromDB);
-                bankFromDB.ExchangeRates = newExchangeRateList;
-                bankFromDB.LastUpdate = updateDate;
-                await context.SaveChangesAsync();
+                await dataBaseService.UpdateExchangeRates(bankFromDB.Id, newExchangeRateList, updateDate);
             }
-        }
-
-        public static void Fill(this ExchangeRate obj, enCurrency sale, enCurrency buy, decimal rate)
-        {
-            obj.CurrencySale = sale;
-            obj.CurrencyBuy = buy;
-            obj.Rate = (double)rate;
         }
     }
 }

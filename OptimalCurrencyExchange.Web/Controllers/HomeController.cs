@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OptimalCurrencyExchange.Web.BLL;
+using OptimalCurrencyExchange.Web.DAL;
 using OptimalCurrencyExchange.Web.Models;
 using OptimalCurrencyExchange.Web.Models.ViewModels;
 
@@ -15,12 +16,14 @@ namespace OptimalCurrencyExchange.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ExchangeDbContext _context;
+        private readonly ExchangeService exchangeService;
+        private readonly DataBaseService dataBaseService;
 
-        public HomeController(ILogger<HomeController> logger, ExchangeDbContext context)
+        public HomeController(ILogger<HomeController> logger, ExchangeService exchangeService, DataBaseService dataBaseService)
         {
             _logger = logger;
-            _context = context;
+            this.exchangeService = exchangeService;
+            this.dataBaseService = dataBaseService;
         }
 
         public IActionResult Index()
@@ -39,12 +42,23 @@ namespace OptimalCurrencyExchange.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        // GET: ExchangeRates
+        public async Task<IActionResult> ExchangeRatesAsync()
+        {
+            await exchangeService.CheckDataRelevanceAsync();
+            var exchangeDbContext = dataBaseService.GetExchangeRates();
+            return View(exchangeDbContext);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> FindOptimalExchangeAsync([Bind("CurrencyFrom,CountFrom,CurrencyTo")] ExchangeRequest exchangeRequest)
+        public async Task<IActionResult> ExchangesAsync([Bind("CurrencyFrom,CountFrom,CurrencyTo")] ExchangeRequest exchangeRequest)
         {
-            await ExchangeHelper.CheckDataRelevanceAsync(_context);
-            var bestExchanges = ExchangeHelper.FindBestExchanges(_context, exchangeRequest);
+            if (exchangeRequest.CurrencyFrom == exchangeRequest.CurrencyTo)
+                return View("Index");
+
+            await exchangeService.CheckDataRelevanceAsync();
+            var bestExchanges = exchangeService.FindBestExchanges(exchangeRequest);
             return View(bestExchanges);
         }
     }

@@ -156,12 +156,6 @@ D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\bin\Debug\netcoreapp3.1\
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\OptimalCurrencyExchange.Web.Views.pdb
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\OptimalCurrencyExchange.Web.dll
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\OptimalCurrencyExchange.Web.pdb
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Create.cshtml.g.cs
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Delete.cshtml.g.cs
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Details.cshtml.g.cs
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Edit.cshtml.g.cs
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Exchanges\Index.cshtml.g.cs
-D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\FindOptimalExchange.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\bin\Debug\netcoreapp3.1\System.Net.Http.Formatting.dll
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\OptimalCurrencyExchange.Web.MvcApplicationPartsAssemblyInfo.cache
@@ -170,3 +164,4 @@ D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\ExchangeRates\Details.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\ExchangeRates\Edit.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\ExchangeRates\Index.cshtml.g.cs
+D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\FindOptimalExchange.cshtml.g.cs

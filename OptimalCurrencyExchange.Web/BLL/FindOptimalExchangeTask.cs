@@ -1,4 +1,5 @@
 ﻿using OptimalCurrencyExchange.Web.Models.Enums;
+using OptimalCurrencyExchange.Web.Models.ModelsBL;
 using OptimalCurrencyExchange.Web.Models.ModelsDB;
 using OptimalCurrencyExchange.Web.Models.ViewModels;
 using System;
@@ -26,7 +27,7 @@ namespace OptimalCurrencyExchange.BLL
             var currencyChain = new List<List<enCurrency>>();
             FillCurrencyChain(currencyChain, exchangeRequest.CurrencyTo, new List<enCurrency> { exchangeRequest.CurrencyFrom });
             var exchanges = CalcChains(currencyChain);
-            var sortedExchanges = exchanges.OrderBy(e => e.CountTo).ToList();
+            var sortedExchanges = exchanges.OrderBy(e => e.CountTo).Reverse().ToList();
             Result = sortedExchanges;
         }
 
@@ -51,8 +52,6 @@ namespace OptimalCurrencyExchange.BLL
                     FillCurrencyChain(variants, toCurrency, newSteps);
                 }
             }
-
-
         }
 
         private List<Exchange> CalcChains(List<List<enCurrency>> currencyChain)

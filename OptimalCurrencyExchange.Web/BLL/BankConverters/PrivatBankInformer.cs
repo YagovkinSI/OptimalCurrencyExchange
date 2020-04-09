@@ -8,18 +8,26 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL.BankConverters
 {
-    public class PrivatBankConverter : BankConverter
+    public class PrivatBankInformer : BankInformer
     {
         public override string Name => "ПриватБанк";
         public override string Url => "https://privatbank.ua/";
 
-        private string apiPath = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5";
+        protected override string ApiPath => "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5";
 
         public override async Task<List<ExchangeRate>> GetNewExchangeRateListAsync(HttpClient client)
         {
+            var bankObj = await GetRateObject<PrivatBankObj[]>(client);
+            var list = GetExchangeRates(bankObj);
+            return list;
+            
+        }
+
+        protected override List<ExchangeRate> GetExchangeRates<T>(T bankObj)
+        {
+            var objArray = bankObj as PrivatBankObj[];
             var list = new List<ExchangeRate>();
-            var objArray = await GetPrivatBankObjAsync(client);
-            if (objArray == null)
+            if (objArray.Length == 0)
                 return list;
             foreach (var obj in objArray)
             {
@@ -33,24 +41,6 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
                     AddToList(ref list, ccy2, ccy1, obj.sale);
             }
             return list;
-        }
-
-        private void AddToList(ref List<ExchangeRate> list, enCurrency sale, enCurrency buy, decimal rate)
-        {
-            var obj = new ExchangeRate();
-            obj.Fill(sale, buy, rate);
-            list.Add(obj);
-        }
-
-        private async Task<PrivatBankObj[]> GetPrivatBankObjAsync(HttpClient client)
-        {
-            PrivatBankObj[] bankObjectArray = null;
-            var responseMessage = await client.GetAsync(apiPath);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                bankObjectArray = await responseMessage.Content.ReadAsAsync<PrivatBankObj[]>();
-            }
-            return bankObjectArray;
         }
 
         private enCurrency GetCurrency(string currency)

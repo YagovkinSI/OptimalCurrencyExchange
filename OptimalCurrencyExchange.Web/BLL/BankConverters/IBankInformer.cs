@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL.BankConverters
 {
-    public interface IBankConverter
+    public interface IBankInformer
     {
         string Name { get; }
         string Url { get; }

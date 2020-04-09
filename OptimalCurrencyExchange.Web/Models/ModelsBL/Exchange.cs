@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OptimalCurrencyExchange.Web.Models.ModelsDB
+namespace OptimalCurrencyExchange.Web.Models.ModelsBL
 {
     public class Exchange
     {

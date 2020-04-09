@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL.BankConverters
 {
-    public class AlfaBankConverter : BankConverter
+    public class AlfaBankInformer : BankInformer
     {
         public override string Name => "Альфа банк";
         public override string Url => "https://www.alfabank.by/";
 
-        private string apiPath = "https://developerhub.alfabank.by:8273/partner/1.0.1/public/rates";
+        protected override string ApiPath => "https://developerhub.alfabank.by:8273/partner/1.0.1/public/rates";
 
         public override async Task<List<ExchangeRate>> GetNewExchangeRateListAsync(HttpClient client)
         {
-            var list = new List<ExchangeRate>();
-            var objArray = await GetPrivatBankObjAsync(client);
-            if (objArray == null)
-                return list;
+            var bankObj = await GetRateObject<AlfaBankObj>(client);
+            var list = GetExchangeRates(bankObj);
+            return list;
+        }
 
-            foreach (var obj in objArray.Rates)
+        protected override List<ExchangeRate> GetExchangeRates<T>(T bankObj)
+        {
+            var alfaBankObj = bankObj as AlfaBankObj;
+            var list = new List<ExchangeRate>();
+            foreach (var obj in alfaBankObj.Rates)
             {
                 var ccy1 = GetCurrency(obj.buyIso);
                 var ccy2 = GetCurrency(obj.sellIso);
@@ -34,24 +38,6 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
                     AddToList(ref list, ccy2, ccy1, 1 / obj.sellRate * obj.quantity);
             }
             return list;
-        }
-
-        private void AddToList(ref List<ExchangeRate> list, enCurrency sale, enCurrency buy, decimal rate)
-        {
-            var obj = new ExchangeRate();
-            obj.Fill(sale, buy, rate);
-            list.Add(obj);
-        }
-
-        private async Task<AlfaBankObj> GetPrivatBankObjAsync(HttpClient client)
-        {
-            AlfaBankObj bankObjectArray = null;
-            var responseMessage = await client.GetAsync(apiPath);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                bankObjectArray = await responseMessage.Content.ReadAsAsync<AlfaBankObj>();
-            }
-            return bankObjectArray;
         }
 
         private enCurrency GetCurrency(string currency)

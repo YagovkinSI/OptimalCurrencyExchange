@@ -8,18 +8,25 @@ using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL.BankConverters
 {
-    public class BelarusBankConverter : BankConverter
+    public class BelarusBankInformer : BankInformer
     {
         public override string Name => "Беларусбанк";
         public override string Url => "https://belarusbank.by/";
 
-        private string apiPath = "https://belarusbank.by/api/kursExchange?city=%D0%9C%D0%B8%D0%BD%D1%81%D0%BA";
+        protected override string ApiPath => "https://belarusbank.by/api/kursExchange?city=%D0%9C%D0%B8%D0%BD%D1%81%D0%BA";
 
         public override async Task<List<ExchangeRate>> GetNewExchangeRateListAsync(HttpClient client)
         {
+            var bankObj = await GetRateObject<BelarusBankObj[]>(client);
+            var list = GetExchangeRates(bankObj);
+            return list;
+        }
+
+        protected override List<ExchangeRate> GetExchangeRates<T>(T bankObj)
+        {
+            var objArray = bankObj as BelarusBankObj[];
             var list = new List<ExchangeRate>();
-            var objArray = await GetPrivatBankObjAsync(client);
-            if (objArray == null || objArray.Length == 0)
+            if (objArray.Length == 0)
                 return list;
             var obj = objArray[0];
             if (obj.USD_in > 0)
@@ -49,26 +56,8 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
             if (obj.RUB_EUR_in > 0)
                 AddToList(ref list, enCurrency.RUR, enCurrency.EUR, 1 / obj.RUB_EUR_in);
             if (obj.RUB_EUR_out > 0)
-                AddToList(ref list, enCurrency.EUR, enCurrency.RUR, 1 / obj.RUB_EUR_out);            
+                AddToList(ref list, enCurrency.EUR, enCurrency.RUR, 1 / obj.RUB_EUR_out);
             return list;
-        }
-
-        private void AddToList(ref List<ExchangeRate> list, enCurrency sale, enCurrency buy, decimal rate)
-        {
-            var obj = new ExchangeRate();
-            obj.Fill(sale, buy, rate);
-            list.Add(obj);
-        }
-
-        private async Task<BelarusBankObj[]> GetPrivatBankObjAsync(HttpClient client)
-        {
-            BelarusBankObj[] bankObjectArray = null;
-            var responseMessage = await client.GetAsync(apiPath);
-            if (responseMessage.IsSuccessStatusCode)
-            {
-                bankObjectArray = await responseMessage.Content.ReadAsAsync<BelarusBankObj[]>();
-            }
-            return bankObjectArray;
         }
 
         private class BelarusBankObj
@@ -77,10 +66,10 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
             public decimal USD_out { get; set; }
             public decimal EUR_in { get; set; }
             public decimal EUR_out { get; set; }
-            public decimal RUB_in { get; set; } //100
-            public decimal RUB_out { get; set; } //100
-            public decimal UAH_in { get; set; } //100
-            public decimal UAH_out { get; set; } //100
+            public decimal RUB_in { get; set; } //x100
+            public decimal RUB_out { get; set; } //x100
+            public decimal UAH_in { get; set; } //x100
+            public decimal UAH_out { get; set; } //x100
             public decimal USD_EUR_in { get; set; }
             public decimal USD_EUR_out { get; set; }
             public decimal USD_RUB_in { get; set; }

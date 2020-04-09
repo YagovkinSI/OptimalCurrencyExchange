@@ -3,6 +3,7 @@ using OptimalCurrencyExchange.BLL;
 using OptimalCurrencyExchange.Web.BLL.BankConverters;
 using OptimalCurrencyExchange.Web.Models;
 using OptimalCurrencyExchange.Web.Models.Enums;
+using OptimalCurrencyExchange.Web.Models.ModelsBL;
 using OptimalCurrencyExchange.Web.Models.ModelsDB;
 using OptimalCurrencyExchange.Web.Models.ViewModels;
 using System;
@@ -17,10 +18,10 @@ namespace OptimalCurrencyExchange.Web.BLL
     {
         private static HttpClient client = new HttpClient();
 
-        private static IBankConverter[] bankConverters = new IBankConverter[] {
-            new AlfaBankConverter(),
-            new PrivatBankConverter(), 
-            new BelarusBankConverter() };
+        private static IBankInformer[] bankConverters = new IBankInformer[] {
+            new AlfaBankInformer(),
+            new PrivatBankInformer(), 
+            new BelarusBankInformer() };
 
         const double DataRelevanceDeltaHours = 1.0;
 
@@ -57,36 +58,19 @@ namespace OptimalCurrencyExchange.Web.BLL
             return allExchange;
         }
 
-        private static async Task UpdateDataAsync(ExchangeDbContext context, Bank bankFromDB, IBankConverter bankConverter)
+        private static async Task UpdateDataAsync(ExchangeDbContext context, Bank bankFromDB, IBankInformer bankConverter)
         {
+            var updateDate = DateTime.Now;
             var newExchangeRateList = await bankConverter.GetNewExchangeRateListAsync(client);
             if (newExchangeRateList.Count > 0)
             {
                 var ratesFromDB = context.ExchangeRates.Where(r => r.BankId == bankFromDB.Id);
                 context.ExchangeRates.RemoveRange(ratesFromDB);
                 bankFromDB.ExchangeRates = newExchangeRateList;
+                bankFromDB.LastUpdate = updateDate;
                 await context.SaveChangesAsync();
             }
         }
-
-        //public static async Task<List<CurrencyEdge>> GetPrivatCurrencyEdge()
-        //{
-        //    var converting = new List<CurrencyEdge>();
-        //    foreach (var converter in bankConverters)
-        //    {
-        //        var list = await converter.GetCurrencyEdgesAsync(client);
-        //        foreach (var edge in list)
-        //        {
-        //            var existEdge = converting.SingleOrDefault(e => e.Buy == edge.Buy && e.Sale == edge.Sale);
-        //            if (existEdge != null)
-        //            {
-        //                existEdge.Rates.AddRange(edge.Rates);
-        //            }
-        //            else converting.Add(edge);
-        //        }
-        //    }
-        //    return converting;
-        //}
 
         public static void Fill(this ExchangeRate obj, enCurrency sale, enCurrency buy, decimal rate)
         {

@@ -1,11 +1,12 @@
 ﻿using OptimalCurrencyExchange.Web.Models.Enums;
+using OptimalCurrencyExchange.Web.Models.ModelsDB;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OptimalCurrencyExchange.Web.Models.ModelsDB
+namespace OptimalCurrencyExchange.Web.Models.ModelsBL
 {
     public class ExchangeStep
     {

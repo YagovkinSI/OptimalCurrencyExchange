@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OptimalCurrencyExchange.Web.BLL;
 using OptimalCurrencyExchange.Web.Models;
-using OptimalCurrencyExchange.Web.Models.ModelsDB;
 using OptimalCurrencyExchange.Web.Models.ViewModels;
 
 namespace OptimalCurrencyExchange.Web.Controllers
@@ -46,7 +45,7 @@ namespace OptimalCurrencyExchange.Web.Controllers
         {
             await ExchangeHelper.CheckDataRelevanceAsync(_context);
             var bestExchanges = ExchangeHelper.FindBestExchanges(_context, exchangeRequest);
-            return View(new Exchange());
+            return View(bestExchanges);
         }
     }
 }

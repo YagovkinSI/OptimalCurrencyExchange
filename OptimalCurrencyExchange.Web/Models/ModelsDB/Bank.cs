@@ -18,7 +18,5 @@ namespace OptimalCurrencyExchange.Web.Models.ModelsDB
         public virtual List<ExchangeRate> ExchangeRates { get; set; }
         [Required, Display(Name = "Последнее обновление данных")]
         public DateTime LastUpdate { get; set; }
-        [Browsable(false)]
-        public virtual List<ExchangeStep> ExchangeSteps { get; set; }
     }
 }

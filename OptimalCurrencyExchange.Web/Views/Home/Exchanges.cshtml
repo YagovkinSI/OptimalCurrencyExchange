@@ -10,6 +10,12 @@
 }
 
 <h1>Оптимальные варианты обмена @firstExchange.CountFrom @firstExchange.CurrencyFrom в @firstExchange.CurrencyTo</h1>
+
+@foreach (var message in (ViewBag.RelativeRate as List<string>))
+{
+    <p>@message</p>
+}
+
 <div>
     @for (var i = 0; i < count; i++)
     {
@@ -26,7 +32,7 @@
 
                 }
             </ol>
-        </div>        
+        </div>
     }
 </div>
 

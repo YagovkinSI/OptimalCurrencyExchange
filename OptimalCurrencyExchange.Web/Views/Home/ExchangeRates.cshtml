@@ -6,6 +6,11 @@
 
 <h1>Курсы обмена валют</h1>
 
+@foreach (var message in (ViewBag.RelativeRate as List<string>))
+{
+    <p>@message</p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -25,21 +30,22 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bank.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrencySale)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CurrencyBuy)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rate)
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Bank.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencySale)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencyBuy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

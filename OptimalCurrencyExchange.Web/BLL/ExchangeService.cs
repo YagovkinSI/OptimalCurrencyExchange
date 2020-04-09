@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.BLL
@@ -33,11 +34,12 @@ namespace OptimalCurrencyExchange.Web.BLL
             client = httpClient;
         }
 
-        public async Task CheckDataRelevanceAsync()
+        public async Task<List<string>> CheckDataRelevanceAsync()
         {
+            var result = new List<string>();
             var banksFromDB = dataBaseService.GetBanks();
             foreach (var bankConverter in bankConverters)
-            {
+            {                
                 var bankFromDB = banksFromDB.SingleOrDefault(b => b.Name == bankConverter.Name);
                 if (bankFromDB == null)
                 {
@@ -46,14 +48,23 @@ namespace OptimalCurrencyExchange.Web.BLL
                         Name = bankConverter.Name,
                         Url = bankConverter.Url,
                         LastUpdate = DateTime.MinValue
-                    }; 
+                    };
                     await dataBaseService.AddBankAsync(bankFromDB);
                 }
                 if (bankFromDB.LastUpdate < DateTime.Now - TimeSpan.FromHours(DataRelevanceDeltaHours))
                 {
-                    await UpdateDataAsync(bankFromDB, bankConverter);
-                }                
+                    try
+                    {
+                        await UpdateDataAsync(bankFromDB, bankConverter);
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Add(ex.Message);
+                    }
+                }
+                result.Add($"Последнее обновление курса банка {bankFromDB.Name} - {bankFromDB.LastUpdate}.");
             }
+            return result;
         }
 
         internal List<Exchange> FindBestExchanges(ExchangeRequest exchangeRequest)

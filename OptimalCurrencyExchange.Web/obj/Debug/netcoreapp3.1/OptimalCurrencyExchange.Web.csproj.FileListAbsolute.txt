@@ -161,3 +161,4 @@ D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\bin\Debug\netcoreapp3.1\
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\OptimalCurrencyExchange.Web.MvcApplicationPartsAssemblyInfo.cache
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\ExchangeRates.cshtml.g.cs
 D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\Exchanges.cshtml.g.cs
+D:\YSIApps\CurrencyExchange\OptimalCurrencyExchange.Web\obj\Debug\netcoreapp3.1\Razor\Views\Home\ErrorPage.cshtml.g.cs

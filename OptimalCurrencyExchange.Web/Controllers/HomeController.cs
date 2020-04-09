@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using OptimalCurrencyExchange.Web.BLL;
 using OptimalCurrencyExchange.Web.DAL;
 using OptimalCurrencyExchange.Web.Models;
 using OptimalCurrencyExchange.Web.Models.ViewModels;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace OptimalCurrencyExchange.Web.Controllers
 {
@@ -42,12 +39,25 @@ namespace OptimalCurrencyExchange.Web.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult ErrorPage(string message)
+        {
+            ViewBag.MessageError = message;
+            return View();
+        }
+
         // GET: ExchangeRates
         public async Task<IActionResult> ExchangeRatesAsync()
         {
-            await exchangeService.CheckDataRelevanceAsync();
-            var exchangeDbContext = dataBaseService.GetExchangeRates();
-            return View(exchangeDbContext);
+            try
+            {
+                ViewBag.RelativeRate = await exchangeService.CheckDataRelevanceAsync();
+                var exchangeDbContext = dataBaseService.GetExchangeRates();
+                return View(exchangeDbContext);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(ErrorPage), ex.Message);
+            }
         }
 
         [HttpPost]
@@ -57,9 +67,16 @@ namespace OptimalCurrencyExchange.Web.Controllers
             if (exchangeRequest.CurrencyFrom == exchangeRequest.CurrencyTo)
                 return View("Index");
 
-            await exchangeService.CheckDataRelevanceAsync();
-            var bestExchanges = exchangeService.FindBestExchanges(exchangeRequest);
-            return View(bestExchanges);
+            try
+            {
+                ViewBag.RelativeRate = await exchangeService.CheckDataRelevanceAsync();
+                var bestExchanges = exchangeService.FindBestExchanges(exchangeRequest);
+                return View(bestExchanges);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(ErrorPage), ex.Message);
+            }
         }
     }
 }

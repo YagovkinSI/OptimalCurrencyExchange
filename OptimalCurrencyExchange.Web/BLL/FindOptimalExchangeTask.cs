@@ -25,13 +25,19 @@ namespace OptimalCurrencyExchange.BLL
         public void Exucute()
         {
             var currencyChain = new List<List<enCurrency>>();
-            FillCurrencyChain(currencyChain, exchangeRequest.CurrencyTo, new List<enCurrency> { exchangeRequest.CurrencyFrom });
+            FillCurrencyChain(ref currencyChain, exchangeRequest.CurrencyTo, new List<enCurrency> { exchangeRequest.CurrencyFrom });
             var exchanges = CalcChains(currencyChain);
             var sortedExchanges = exchanges.OrderBy(e => e.CountTo).Reverse().ToList();
             Result = sortedExchanges;
         }
 
-        private void FillCurrencyChain(List<List<enCurrency>> variants, enCurrency toCurrency, List<enCurrency> currentSteps)
+        /// <summary>
+        /// Рекурсиынй поиск всех возможных цепочек валют для обмена
+        /// </summary>
+        /// <param name="variants">Варианты обмена (ref указан только для удобства чтения кода, передается всё равно ReferenseType)</param>
+        /// <param name="toCurrency">Валюта покупки</param>
+        /// <param name="currentSteps">Уже сделанные шаги для покупки валюты</param>
+        private void FillCurrencyChain(ref List<List<enCurrency>> variants, enCurrency toCurrency, List<enCurrency> currentSteps)
         {
             foreach (var currency in Enum.GetValues(typeof(enCurrency)))
             {
@@ -49,11 +55,16 @@ namespace OptimalCurrencyExchange.BLL
                     var newSteps = new List<enCurrency>(currentSteps.Count + 1);
                     newSteps.AddRange(currentSteps);
                     newSteps.Add((enCurrency)currency);
-                    FillCurrencyChain(variants, toCurrency, newSteps);
+                    FillCurrencyChain(ref variants, toCurrency, newSteps);
                 }
             }
         }
 
+        /// <summary>
+        /// Расчет результата обмена для кажой цепочки обмена валюты
+        /// </summary>
+        /// <param name="currencyChain">все цепочки обмена валюты</param>
+        /// <returns>Результаты обменов в банках</returns>
         private List<Exchange> CalcChains(List<List<enCurrency>> currencyChain)
         {
             var exchanges = new List<Exchange>();
@@ -66,6 +77,12 @@ namespace OptimalCurrencyExchange.BLL
             return exchanges;
         }
 
+        /// <summary>
+        /// Рекурсивный расчет каждого шага обмена валюты в банках
+        /// </summary>
+        /// <param name="exchangesForChain">Список обменов (ref только для удоства чтения кода, используется ReferenseType)</param>
+        /// <param name="chain">Цепочка обмена валюты</param>
+        /// <param name="steps">Уже выполненые шаги по обмену валюты</param>
         private void FillExchangesForChain(ref List<Exchange> exchangesForChain, List<enCurrency> chain, List<ExchangeStep> steps)
         {
             var stepNumber = steps.Count + 1;

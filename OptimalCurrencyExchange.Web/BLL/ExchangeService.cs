@@ -21,7 +21,7 @@ namespace OptimalCurrencyExchange.Web.BLL
 
         private readonly HttpClient client ;
 
-        private IBankInformer[] bankConverters = new IBankInformer[] {
+        private IBankInformer[] bankInformers = new IBankInformer[] {
             new AlfaBankInformer(),
             new PrivatBankInformer(), 
             new BelarusBankInformer() };
@@ -34,28 +34,33 @@ namespace OptimalCurrencyExchange.Web.BLL
             client = httpClient;
         }
 
-        public async Task<List<string>> CheckDataRelevanceAsync()
+        /// <summary>
+        /// Проверка акктуальности данных курсов обмена в БД
+        /// </summary>
+        /// <param name="forcedUpdate">Принудительно обновить данные</param>
+        /// <returns>Отчет о успешности и времени последнего обновления для каждого банка</returns>
+        public async Task<List<string>> CheckDataRelevanceAsync(bool forcedUpdate = false)
         {
             var result = new List<string>();
             var banksFromDB = dataBaseService.GetBanks();
-            foreach (var bankConverter in bankConverters)
+            foreach (var bankInformer in bankInformers)
             {                
-                var bankFromDB = banksFromDB.SingleOrDefault(b => b.Name == bankConverter.Name);
+                var bankFromDB = banksFromDB.SingleOrDefault(b => b.Name == bankInformer.Name);
                 if (bankFromDB == null)
                 {
                     bankFromDB = new Bank
                     {
-                        Name = bankConverter.Name,
-                        Url = bankConverter.Url,
+                        Name = bankInformer.Name,
+                        Url = bankInformer.Url,
                         LastUpdate = DateTime.MinValue
                     };
                     await dataBaseService.AddBankAsync(bankFromDB);
                 }
-                if (bankFromDB.LastUpdate < DateTime.Now - TimeSpan.FromHours(DataRelevanceDeltaHours))
+                if (forcedUpdate || bankFromDB.LastUpdate < DateTime.Now - TimeSpan.FromHours(DataRelevanceDeltaHours))
                 {
                     try
                     {
-                        await UpdateDataAsync(bankFromDB, bankConverter);
+                        await UpdateDataAsync(bankFromDB, bankInformer);
                     }
                     catch (Exception ex)
                     {
@@ -67,6 +72,11 @@ namespace OptimalCurrencyExchange.Web.BLL
             return result;
         }
 
+        /// <summary>
+        /// Перебор всех возможных вариантов обмена с получение лучших вариантов
+        /// </summary>
+        /// <param name="exchangeRequest">Запрос на обмен валюты</param>
+        /// <returns>Отсортированный список всех возможных вариантов обменов</returns>
         internal List<Exchange> FindBestExchanges(ExchangeRequest exchangeRequest)
         {
             var exchangeDbContext = dataBaseService.GetExchangeRates();
@@ -76,10 +86,16 @@ namespace OptimalCurrencyExchange.Web.BLL
             return allExchange;
         }
 
-        private async Task UpdateDataAsync(Bank bankFromDB, IBankInformer bankConverter)
+        /// <summary>
+        /// Обновление данных банка в БД
+        /// </summary>
+        /// <param name="bankFromDB">Банк</param>
+        /// <param name="bankInformer">Класс работы с банком</param>
+        /// <returns></returns>
+        private async Task UpdateDataAsync(Bank bankFromDB, IBankInformer bankInformer)
         {
             var updateDate = DateTime.Now;
-            var newExchangeRateList = await bankConverter.GetNewExchangeRateListAsync(client);
+            var newExchangeRateList = await bankInformer.GetNewExchangeRateListAsync(client);
             if (newExchangeRateList.Count > 0)
             {
                 await dataBaseService.UpdateExchangeRates(bankFromDB.Id, newExchangeRateList, updateDate);

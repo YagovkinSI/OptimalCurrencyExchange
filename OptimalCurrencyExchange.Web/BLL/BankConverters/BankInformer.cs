@@ -16,6 +16,11 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
         private string ResponsiveMessageErrorText => $"Не удалось получить обменный курс банка {Name}";
         private string MessageFormatErrorText => $"Неизвестный формат данных обменного курса банка {Name}";
 
+        /// <summary>
+        /// Получение свежего курса обмена валюты 
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>Список курсов обмена валюты</returns>
         public abstract Task<List<ExchangeRate>> GetNewExchangeRateListAsync(HttpClient client);
 
         protected async Task<T> GetRateObject<T>(HttpClient client)
@@ -34,6 +39,11 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
             return bankObject;
         }
 
+        /// <summary>
+        /// Получение свежего курса обмена от API банка
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns>Ответ API банка</returns>
         private async Task<HttpResponseMessage> GetResponseMessage(HttpClient client)
         {
             HttpResponseMessage responseMessage;
@@ -54,6 +64,12 @@ namespace OptimalCurrencyExchange.Web.BLL.BankConverters
             return responseMessage;
         }
 
+        /// <summary>
+        /// Приведение полученного ответа API банка в формат списка курсов БД
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="bankObj"></param>
+        /// <returns>Список обемнных курсов</returns>
         protected abstract List<ExchangeRate> GetExchangeRates<T>(T bankObj);  
 
         protected void AddToList(ref List<ExchangeRate> list, enCurrency sale, enCurrency buy, decimal rate)

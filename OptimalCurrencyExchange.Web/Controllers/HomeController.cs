@@ -45,12 +45,11 @@ namespace OptimalCurrencyExchange.Web.Controllers
             return View();
         }
 
-        // GET: ExchangeRates
-        public async Task<IActionResult> ExchangeRatesAsync()
+        public async Task<IActionResult> ExchangeRatesAsync(bool forcedUpdate = false)
         {
             try
             {
-                ViewBag.RelativeRate = await exchangeService.CheckDataRelevanceAsync();
+                ViewBag.DataRelevance = await exchangeService.CheckDataRelevanceAsync(forcedUpdate);
                 var exchangeDbContext = dataBaseService.GetExchangeRates();
                 return View(exchangeDbContext);
             }
@@ -69,7 +68,7 @@ namespace OptimalCurrencyExchange.Web.Controllers
 
             try
             {
-                ViewBag.RelativeRate = await exchangeService.CheckDataRelevanceAsync();
+                ViewBag.DataRelevance = await exchangeService.CheckDataRelevanceAsync();
                 var bestExchanges = exchangeService.FindBestExchanges(exchangeRequest);
                 return View(bestExchanges);
             }
